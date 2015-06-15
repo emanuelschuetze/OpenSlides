@@ -28,6 +28,7 @@ angular.module('OpenSlidesApp.site', [
     'ui.select',
     'xeditable',
     'OpenSlidesApp.core.site',
+    'OpenSlidesApp.config.site',
     'OpenSlidesApp.agenda.site',
     'OpenSlidesApp.motions.site',
     'OpenSlidesApp.assignments.site',

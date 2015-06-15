@@ -279,6 +279,30 @@ angular.module('OpenSlidesApp.core.site', ['OpenSlidesApp.core'])
     };
 })
 
+
+// html-tag os-form-field to generate generic from fields
+// TODO: make it possible to use other fields then config fields
+.directive('osFormField', function($parse) {
+    function getHtmlType(type) {
+        return {
+            string: 'text',
+            integer: 'number',
+            boolean: 'checkbox',
+            choice: 'radio',
+        }[type];
+    }
+
+    return {
+        restrict: 'E',
+        templateUrl: '/static/templates/config-form-field.html',
+        link: function ($scope, iElement, iAttrs, controller, transcludeFn) {
+            var config = $parse(iAttrs.field)($scope);
+            $scope.type = getHtmlType(config.input_type);
+
+        }
+    }
+})
+
 .controller("LanguageCtrl", function ($scope, gettextCatalog) {
     // controller to switch app language
     // TODO: detect browser language for default language
