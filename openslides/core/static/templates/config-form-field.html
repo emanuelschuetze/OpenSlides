@@ -1,14 +1,15 @@
 <div class="form-group">
-  <label>{{ config.label }}</label>
+  <label>{{ label }}</label>
+
   <div class="input-group">
-    <input ng-model="config.value" ng-change="save(config)" id="{{ config.key }}" type="{{ type }}"
+    <input ng-model="value" ng-change="save(configOption.key, value)" id="{{ id }}" type="{{ type }}"
         class="form-control">
     <span class="input-group-btn">
       <button ng-click="config.value = '1'" class="btn btn-default" translate>
         <i class="fa fa-undo"></i>
-        <translate>Reset</translate>{{ config.default_value }}
+        <translate>Reset</translate>{{ configOption.default_value }}
       </button>
     </span>
   </div>
-  <p ng-if="config.help_text" class="help-block">{{ config.help_text }}</p>
+  <p ng-if="help_text" class="help-block">{{ help_text }}</p>
 </div>

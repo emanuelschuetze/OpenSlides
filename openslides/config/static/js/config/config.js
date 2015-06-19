@@ -10,23 +10,24 @@ angular.module('OpenSlidesApp.config.site', [])
         .state('config.list', {
             controller: 'ConfigListCtrl',
             resolve: {
-                configs: function($http) {
+                configOption: function($http) {
                     return $http({ 'method': 'OPTIONS', 'url': '/rest/config/config/' });
                 }
             }
         });
 })
 
-.controller('ConfigListCtrl', function($scope, Config, configs) {
+.controller('ConfigListCtrl', function($scope, Config, configOption) {
     Config.bindAll({}, $scope, 'configs');
-    $scope.config_groups = configs.data.config_groups;
+    $scope.configGroups = configOption.data.config_groups;
 
     // save changed config value
-    $scope.save = function (config) {
-        Config.save(config);
+    $scope.save = function(key, value) {
+        Config.get(key).value = value;
+        Config.save(key);
     }
     // reset selected config value
-    $scope.reset = function (config) {
+    $scope.reset = function(config) {
         if (config.default_value) {
             config.value = config.default_value;
         }

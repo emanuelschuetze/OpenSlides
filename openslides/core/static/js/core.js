@@ -282,7 +282,7 @@ angular.module('OpenSlidesApp.core.site', ['OpenSlidesApp.core'])
 
 // html-tag os-form-field to generate generic from fields
 // TODO: make it possible to use other fields then config fields
-.directive('osFormField', function($parse) {
+.directive('osFormField', function($parse, Config) {
     function getHtmlType(type) {
         return {
             string: 'text',
@@ -294,11 +294,16 @@ angular.module('OpenSlidesApp.core.site', ['OpenSlidesApp.core'])
 
     return {
         restrict: 'E',
+        scope: true,
         templateUrl: '/static/templates/config-form-field.html',
         link: function ($scope, iElement, iAttrs, controller, transcludeFn) {
-            var config = $parse(iAttrs.field)($scope);
-            $scope.type = getHtmlType(config.input_type);
-
+            var field = $parse(iAttrs.field)($scope);
+            var config = Config.get(field.key);
+            $scope.type = getHtmlType(field.input_type);
+            $scope.label = field.label;
+            $scope.id = 'field-' + field.id;
+            $scope.value = config.value;
+            $scope.help_text = field.help_text;
         }
     }
 })
