@@ -1,7 +1,7 @@
 <div class="form-group">
   <label>{{ config.label }}</label>
   <div class="input-group">
-    <input ng-model="config.value" id="{{ config.key }}" type="{{ type }}"
+    <input ng-model="config.value" ng-change="save(config)" id="{{ config.key }}" type="{{ type }}"
         class="form-control">
     <span class="input-group-btn">
       <button ng-click="config.value = '1'" class="btn btn-default" translate>
