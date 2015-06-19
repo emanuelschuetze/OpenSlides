@@ -18,9 +18,9 @@
             <h3>{{ subgroup.name }}</h3>
             <div ng-repeat="config in subgroup.items">
               <div class="form-group">
-                <label>{{ config.label }} | {{ config.get_html_input_type() }}</label>
+                <label>{{ config.label }} | {{config.input_type}} |  #{{ get_html_input_type(config.input_type) }}</label>
                 <div class="input-group">
-                  <input ng-model="config.value" id="{{ config.key }}" type="{{ config.get_html_input_type() }}"
+                  <input ng-model="config.value" id="{{ config.key }}" type="{{ get_html_input_type(config.input_type) }}"
                       class="form-control">
                   <span class="input-group-btn">
                     <button ng-click="config.value = config.default_value" class="btn btn-default" translate>

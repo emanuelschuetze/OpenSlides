@@ -20,15 +20,16 @@ angular.module('OpenSlidesApp.config.site', [])
 .controller('ConfigListCtrl', function($scope, Config, configs) {
     Config.bindAll({}, $scope, 'configs');
     $scope.config_groups = configs.data.config_groups;
-    var html_input_types = {
-        string: 'text',
-        integer: 'number'
-    };
 
-    // convert input_type in html-type
     $scope.get_html_input_type = function (type) {
-        return html_input_type.type
+        var html_input_types = {
+            string: 'text',
+            integer: 'number',
+            boolean: 'checkbox'
+        };
+        return html_input_types[type];
     }
+
 
     // save changed config value
     $scope.save = function (config) {
