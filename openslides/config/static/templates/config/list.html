@@ -1,27 +1,36 @@
 <h1 translate>Settings</h1>
 
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-  <!-- General -->
-  <div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="headingGeneral">
-      <h4 class="panel-title">
-        <a data-toggle="collapse" data-parent="#accordion" href="#general"
-            aria-expanded="false" aria-controls="general" translate>
-          General
-        </a>
-      </h4>
-    </div>
-    <div id="general" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingGeneral">
-      <div class="panel-body">
-        <div ng-repeat="config in configs | filter: {key: 'general_'}">
-          <div class="form-group">
-            <label>{{config.key}}</label>
-            <!-- TODO: get new 'config.type' field to use correct input type -->
-            <div class="input-group">
-              <input type="text" class="form-control" ng-model="config.value">
-              <span class="input-group-btn">
-                <button ng-click="save(config)" class="btn btn-default" translate>Save</button>
-              </span>
+  <!-- generate config groups -->
+  <div ng-repeat="group in config_groups">
+    <div class="panel panel-default">
+      <div class="panel-heading" role="tab" id="heading{group.name}}{">
+        <h4 class="panel-title">
+          <a data-toggle="collapse" data-parent="#accordion" href="#{{group.name}}"
+              aria-expanded="false" aria-controls="{{group.name}}" translate>
+            {{ group.name }}
+          </a>
+        </h4>
+      </div>
+      <div id="{{group.name}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading{{group.name}}">
+        <div class="panel-body">
+          <div ng-repeat="subgroup in group.subgroups">
+            <h3>{{ subgroup.name }}</h3>
+            <div ng-repeat="config in subgroup.items">
+              <div class="form-group">
+                <label>{{ config.label }}</label>
+                <div class="input-group">
+                  <input ng-model="config.value" id="{{ config.key }}" type="config.input_type"
+                      class="form-control">
+                  <span class="input-group-btn">
+                    <button ng-click="config.value = '1'" class="btn btn-default" translate>
+                      <i class="fa fa-undo"></i>
+                      <translate>Reset</translate>{{config.default_value}}
+                    </button>
+                  </span>
+                </div>
+                <p ng-if="config.help_text" class="help-block">{{ config.help_text }}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -29,145 +38,3 @@
     </div>
   </div>
 
-  <!-- Projector -->
-  <div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="headingProjector">
-      <h4 class="panel-title">
-        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#projector"
-            aria-expanded="false" aria-controls="projector" translate>
-          Projector
-        </a>
-      </h4>
-    </div>
-    <div id="projector" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingProjector">
-      <div class="panel-body">
-        <div ng-repeat="config in configs | filter: {key: 'projector_'}">
-          <div class="form-group">
-            <label>{{config.key}}</label>
-            <div class="input-group">
-              <input type="text" class="form-control" ng-model="config.value">
-              <span class="input-group-btn">
-                <button ng-click="save(config)" class="btn btn-default" translate>Save</button>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Agenda -->
-  <div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="headingAgenda">
-      <h4 class="panel-title">
-        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#agenda"
-            aria-expanded="false" aria-controls="agenda" translate>
-          Agenda
-        </a>
-      </h4>
-    </div>
-    <div id="agenda" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingAgenda">
-      <div class="panel-body">
-        <div ng-repeat="config in configs | filter: {key: 'agenda_'}">
-          <div class="form-group">
-            <label>{{config.key}}</label>
-            <div class="input-group">
-              <input type="text" class="form-control" ng-model="config.value">
-              <span class="input-group-btn">
-                <button ng-click="save(config)" class="btn btn-default" translate>Save</button>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Motions -->
-  <div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="headingMotions">
-      <h4 class="panel-title">
-        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#motions"
-            aria-expanded="false" aria-controls="motions" translate>
-          Motions
-        </a>
-      </h4>
-    </div>
-    <div id="motions" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingMotions">
-      <div class="panel-body">
-        <div ng-repeat="config in configs | filter: {key: 'motions_'}">
-          <div class="form-group">
-            <label>{{config.key}}</label>
-            <div class="input-group">
-              <input type="text" class="form-control" ng-model="config.value">
-              <span class="input-group-btn">
-                <button ng-click="save(config)" class="btn btn-default" translate>Save</button>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Assignments -->
-  <div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="headingAssignments">
-      <h4 class="panel-title">
-        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#assignments"
-            aria-expanded="false" aria-controls="assignments" translate>
-          Elections
-        </a>
-      </h4>
-    </div>
-    <div id="assignments" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingAssignments">
-      <div class="panel-body">
-        <div ng-repeat="config in configs | filter: {key: 'assignments_'}">
-          <div class="form-group">
-            <label>{{config.key}}</label>
-            <div class="input-group">
-              <input type="text" class="form-control" ng-model="config.value">
-              <span class="input-group-btn">
-                <button ng-click="save(config)" class="btn btn-default" translate>Save</button>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Users -->
-  <div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="headingUsers">
-      <h4 class="panel-title">
-        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#users"
-            aria-expanded="false" aria-controls="users" translate>
-          Participants
-        </a>
-      </h4>
-    </div>
-    <div id="users" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingUsers">
-      <div class="panel-body">
-        <div ng-repeat="config in configs | filter: {key: 'users_'}">
-          <div class="form-group">
-            <label>{{config.key}}</label>
-            <div class="input-group">
-              <input type="text" class="form-control" ng-model="config.value">
-              <span class="input-group-btn">
-                <button ng-click="save(config)" class="btn btn-default" translate>Save</button>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<button ng-click="saveall()" class="btn btn-primary disabled" translate>
-  Save all
-</button>
-<button ng-click="resetall()" class="btn btn-default disabled" translate>
-  Reset all
-</button>
