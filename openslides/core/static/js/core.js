@@ -97,7 +97,17 @@ angular.module('OpenSlidesApp.core', [])
     return DS.defineResource({
         name: 'config/config',
         idAttribute: 'key',
-        endpoint: '/rest/config/config/'
+        endpoint: '/rest/config/config/',
+        methods: {
+            get_html_input_type: function() {
+                console.log("html");
+                var html_input_types = {
+                    string: 'text',
+                    integer: 'number'
+                };
+                return html_input_type.type;
+            }
+        }
     });
 })
 

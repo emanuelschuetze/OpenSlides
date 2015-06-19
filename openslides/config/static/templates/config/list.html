@@ -18,12 +18,12 @@
             <h3>{{ subgroup.name }}</h3>
             <div ng-repeat="config in subgroup.items">
               <div class="form-group">
-                <label>{{ config.label }}</label>
+                <label>{{ config.label }} | {{ config.get_html_input_type() }}</label>
                 <div class="input-group">
-                  <input ng-model="config.value" id="{{ config.key }}" type="config.input_type"
+                  <input ng-model="config.value" id="{{ config.key }}" type="{{ config.get_html_input_type() }}"
                       class="form-control">
                   <span class="input-group-btn">
-                    <button ng-click="config.value = '1'" class="btn btn-default" translate>
+                    <button ng-click="config.value = config.default_value" class="btn btn-default" translate>
                       <i class="fa fa-undo"></i>
                       <translate>Reset</translate>{{config.default_value}}
                     </button>
