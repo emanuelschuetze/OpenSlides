@@ -1,0 +1,14 @@
+<div class="form-group">
+  <label>{{ config.label }}</label>
+  <div class="input-group">
+    <input ng-model="config.value" id="{{ config.key }}" type="{{ type }}"
+        class="form-control">
+    <span class="input-group-btn">
+      <button ng-click="config.value = '1'" class="btn btn-default" translate>
+        <i class="fa fa-undo"></i>
+        <translate>Reset</translate>{{ config.default_value }}
+      </button>
+    </span>
+  </div>
+  <p ng-if="config.help_text" class="help-block">{{ config.help_text }}</p>
+</div>
