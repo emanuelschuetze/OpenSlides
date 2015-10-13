@@ -21,19 +21,15 @@
   </div>
   <div class="form-group">
     <label for="selectSubmitter" translate>Submitter</label>
-    <select multiple size="3" ng-options="user.id as user.get_short_name() for user in users"
-        ng-model="motion.submitters_id" class="form-control" name="selectSubmitter" required>
-    </select>
-<!-- TODO: use modern ui-select component with more information per user
-    <ui-select multipe ng-model="motion.submitter" theme="bootstrap" name="selectSubmitter">
+    <ui-select multipe ng-model="motion.submitters_id" theme="bootstrap" name="selectSubmitter">
       <ui-select-match placeholder="{{ 'Select or search a participant...' | translate }}">
-        {{ $select.selected.get_short_name() }}
+        {{ $select.selected.get_full_name() }}
       </ui-select-match>
       <ui-select-choices repeat="user.id as user in users | filter: $select.search">
         <div ng-bind-html="user.get_short_name() | highlight: $select.search"></div>
         <small ng-bind-html="user.structure_level | highlight: $select.search"></small>
       </ui-select-choices>
-    </ui-select>-->
+    </ui-select>
   </div>
   <div class="form-group">
     <label for="inputName" translate>Title</label>
@@ -65,16 +61,15 @@
         ng-model="motion.attachments_id" class="form-control" name="selectAttachments">
     </select>
   </div>
-  <!-- TODO: show only if supporters is enabled -->
-  <div class="form-group">
-    <label for="selectSupporter" translate>Supporters</label>
-    <ui-select multiple ng-model="motion.supporters_id" theme="bootstrap" name="selectSupporter">
+  <!-- show supporters if enabled -->
+  <div class="form-group" ng-if="config('motions_min_supporters') > 0">
+    <label for="selectSupporter"  translate>Supporters</label>
+    <ui-select multiple ng-model="motion.supporters_id">
       <ui-select-match placeholder="{{ 'Select or search a participant...' | translate }}">
-        {{ $select.selected.get_short_name() }}
+        {{ $select.selected.get_full_name() }}
       </ui-select-match>
       <ui-select-choices repeat="user.id as user in users | filter: $select.search">
-        <div ng-bind-html="user.get_short_name() | highlight: $select.search"></div>
-        <small ng-bind-html="user.structure_level | highlight: $select.search"></small>
+        <div ng-bind-html="user.get_full_name() | highlight: $select.search"></div>
       </ui-select-choices>
     </ui-select>
   </div>
