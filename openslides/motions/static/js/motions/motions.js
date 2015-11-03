@@ -252,6 +252,9 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                 categories: function(Category) {
                     return Category.findAll();
                 },
+                tags: function(Tag) {
+                    return Tag.findAll();
+                },
                 users: function(User) {
                     return User.findAll();
                 }
@@ -351,11 +354,16 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     '$state',
     'Motion',
     'Category',
+    'Tag',
+    'Workflow',
     'User',
-    function($scope, $state, Motion, Category, User) {
+    function($scope, $state, Motion, Category, Tag, Workflow, User) {
         Motion.bindAll({}, $scope, 'motions');
         Category.bindAll({}, $scope, 'categories');
+        Tag.bindAll({}, $scope, 'tags');
+        Workflow.bindAll({}, $scope, 'workflows');
         User.bindAll({}, $scope, 'users');
+        $scope.alert = {};
 
         // setup table sorting
         $scope.sortColumn = 'identifier';
@@ -436,20 +444,22 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     'Category',
     'Workflow',
     'User',
+    'Tag',
     'motion',
     '$http',
-    function($scope, Motion, Category, Workflow, User, motion, $http) {
+    function($scope, Motion, Category, Workflow, Tag, User, motion, $http) {
         Motion.bindOne(motion.id, $scope, 'motion');
         Category.bindAll({}, $scope, 'categories');
         Workflow.bindAll({}, $scope, 'workflows');
+        Tag.bindAll({}, $scope, 'tags');
         User.bindAll({}, $scope, 'users');
         Motion.loadRelations(motion, 'agenda_item');
         var state = motion.state;
         state.getNextStates()
         $scope.alert = {}; // TODO: show alert in template
 
-        $scope.update_state = function (state_id) {
-            $http.put('/rest/motions/motion/' + motion.id + '/set_state/', {'state': state_id});
+        $scope.update_state = function (state) {
+            $http.put('/rest/motions/motion/' + motion.id + '/set_state/', {'state': state.id});
         }
         $scope.reset_state = function (state_id) {
             $http.put('/rest/motions/motion/' + motion.id + '/set_state/', {});

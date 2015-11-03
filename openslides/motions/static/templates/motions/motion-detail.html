@@ -6,11 +6,7 @@
   </small>
 </h1>
 
-agenda_id: {{ motion.agenda_item }}
-
-<br><br>state: {{ motion.state }}
-
-<br><br>next states: {{ motion.state.getNextStates() }}
+<!-- TODO: show list of speakers controls for { motion.agenda_item } -->
 
 <div id="submenu">
   <a ui-sref="motions.motion.list" class="btn btn-sm btn-default">
@@ -62,22 +58,16 @@ agenda_id: {{ motion.agenda_item }}
 
       <h3 translate>State</h3>
       <span class="label label-primary">{{ motion.state.name | translate }}</span>
-      <button os-perms-lite="motions.can_manage" ng-click="motion.isStatusEditMode=true"
-          class="btn btn-default btn-xs">
-        <i class="fa fa-pencil"></i>
-      </button>
-      <div ng-if="motion.isStatusEditMode" os-perms-lite="motions.can_manage">
+      <div os-perms="motions.can_manage">
         <div class="btn-group-vertical spacer" role="group">
-          <button ng-repeat="state_id in motion.state.next_states_id" class="btn btn-default btn-sm"
-            ng-click="update_state(state_id)">
-            State #{{state_id}}
+          <button ng-repeat="state in motion.state.getNextStates()" ng-click="update_state(state)"
+              class="btn btn-default btn-sm">
+            {{state.name}}
           </button>
-        </div>
-        <div>
-        <button ng-click="reset_state()"
-            class="btn btn-danger btn-xs spacer">
-          <i class="fa fa-exclamation-triangle"></i> Reset
-        </button>
+          <button ng-click="reset_state()" class="btn btn-danger btn-xs">
+            <i class="fa fa-exclamation-triangle"></i>
+            <translate>Reset state</translate>
+          </button>
         </div>
       </div>
 

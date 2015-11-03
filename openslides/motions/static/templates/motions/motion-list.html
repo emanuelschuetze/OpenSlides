@@ -38,11 +38,20 @@
         <translate>Delete selected motions</translate>
       </a>
       <!-- TODO: add filters -->
+      &nbsp;
+      <select ng-model="stateFilter" class="form-control" id="stateFilter">
+        <option value="" translate>--- Select state ---</option>
+        <!-- TODO: use default workflow id from config('motions_workflow') -->
+        <option ng-repeat="state in workflows[0].states" value="{{ state.id }}">{{ state.name }}</option>
+      </select>
     </form>
   </div>
   <div class="col-sm-4">
-    <input type="text" os-focus-me ng-model="filter.search" class="form-control"
-        placeholder="{{ 'Filter' | translate}}">
+    <div class="input-group">
+      <div class="input-group-addon"><i class="fa fa-filter"></i></div>
+      <input type="text" os-focus-me ng-model="filter.search" class="form-control"
+         placeholder="{{ 'Filter' | translate}}">
+    </div>
   </div>
 </div>
 
@@ -80,7 +89,7 @@
             ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
         </i>
   <tbody>
-    <tr ng-repeat="motion in motions | filter: filter.search |
+    <tr ng-repeat="motion in motions | filter: filter.search | filter: {state_id: stateFilter} |
         orderBy: sortColumn:reverse"
         ng-class="{ 'activeline': motion.isProjected(), 'selected': motion.selected }">
       <!-- projector column -->
@@ -169,11 +178,6 @@
                   </ui-select-choices>
                 </ui-select>
               </div>
-            </div>
-            <div class="col-xs-6">
-              <label for="selectState" translate>State</label>
-              <select ng-model="motion.state" class="form-control" name="selectState">
-              </select>
             </div>
           </div>
           <div class="spacer">
