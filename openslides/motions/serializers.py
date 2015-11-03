@@ -58,19 +58,20 @@ class StateSerializer(ModelSerializer):
             'versioning',
             'leave_old_version_active',
             'dont_set_identifier',
-            'next_states',)
+            'next_states',
+            'workflow')
 
 
 class WorkflowSerializer(ModelSerializer):
     """
     Serializer for motion.models.Workflow objects.
     """
-    state_set = StateSerializer(many=True, read_only=True)
+    states = StateSerializer(many=True, read_only=True)
     first_state = PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Workflow
-        fields = ('id', 'name', 'state_set', 'first_state',)
+        fields = ('id', 'name', 'states', 'first_state',)
 
 
 class MotionLogSerializer(ModelSerializer):
@@ -180,7 +181,6 @@ class MotionSerializer(ModelSerializer):
     log_messages = MotionLogSerializer(many=True, read_only=True)
     polls = MotionPollSerializer(many=True, read_only=True)
     reason = CharField(allow_blank=True, required=False, write_only=True)
-    state = StateSerializer(read_only=True)
     text = CharField(write_only=True)
     title = CharField(max_length=255, write_only=True)
     versions = MotionVersionSerializer(many=True, read_only=True)
