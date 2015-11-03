@@ -184,7 +184,11 @@ class MotionSerializer(ModelSerializer):
     text = CharField(write_only=True)
     title = CharField(max_length=255, write_only=True)
     versions = MotionVersionSerializer(many=True, read_only=True)
-    workflow = IntegerField(min_value=1, required=False, validators=[validate_workflow_field])
+    workflow_id = IntegerField(
+        min_value=1,
+        required=False,
+        validators=[validate_workflow_field],
+        write_only=True)
 
     class Meta:
         model = Motion
@@ -201,13 +205,13 @@ class MotionSerializer(ModelSerializer):
             'submitters',
             'supporters',
             'state',
-            'workflow',
+            'workflow_id',
             'tags',
             'attachments',
             'polls',
             'agenda_item_id',
             'log_messages',)
-        read_only_fields = ('parent',)  # Some other fields are also read_only. See definitions above.
+        read_only_fields = ('parent', 'state')  # Some other fields are also read_only. See definitions above.
 
     @transaction.atomic
     def create(self, validated_data):

@@ -525,10 +525,6 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         $scope.motion.reason = $scope.motion.getReason(-1);
 
         $scope.save = function (motion) {
-            // TODO: workflow is not a field on motion. If workflow is set
-            //       to another workflow then motion.state.workflow, then
-            //       motion.state has to be set to the first state in the new
-            //       workflow.
             Motion.save(motion).then(
                 function(success) {
                     $state.go('motions.motion.list');
