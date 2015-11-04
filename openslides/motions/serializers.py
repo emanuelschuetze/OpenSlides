@@ -1,7 +1,6 @@
 from django.db import transaction
 from django.utils.translation import ugettext as _
 
-from openslides.core.config import config
 from openslides.utils.rest_api import (
     CharField,
     DictField,
@@ -224,7 +223,7 @@ class MotionSerializer(ModelSerializer):
         motion.reason = validated_data.get('reason', '')
         motion.identifier = validated_data.get('identifier')
         motion.category = validated_data.get('category')
-        motion.reset_state(validated_data.get('workflow', int(config['motions_workflow'])))
+        motion.reset_state(validated_data.get('workflow_id'))
         motion.save()
         if validated_data.get('submitters'):
             motion.submitters.add(*validated_data['submitters'])
@@ -246,9 +245,9 @@ class MotionSerializer(ModelSerializer):
                 setattr(motion, key, validated_data[key])
 
         # Workflow.
-        workflow = validated_data.get('workflow')
-        if workflow is not None and workflow != motion.workflow:
-            motion.reset_state(workflow)
+        workflow_id = validated_data.get('workflow_id')
+        if workflow_id is not None and workflow_id != motion.workflow:
+            motion.reset_state(workflow_id)
 
         # Decide if a new version is saved to the database.
         if (motion.state.versioning and

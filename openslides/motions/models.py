@@ -409,6 +409,7 @@ class Motion(RESTModelMixin, models.Model):
         """
         Returns the id of the workflow of the motion.
         """
+        # TODO: Rename to workflow_id
         return self.state.workflow.pk
 
     def set_state(self, state):
