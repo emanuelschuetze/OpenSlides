@@ -53,6 +53,9 @@ export class MotionBlockSlideComponent extends BaseMotionSlideComponent<MotionBl
                 if (motion.recommendation) {
                     let recommendation = this.translate.instant(motion.recommendation.name);
                     if (motion.recommendation_extension) {
+                        if (recommendation === 'Sonstiges') {
+                            recommendation = '';
+                        }
                         recommendation +=
                             ' ' +
                             this.replaceReferencedMotions(
@@ -60,7 +63,7 @@ export class MotionBlockSlideComponent extends BaseMotionSlideComponent<MotionBl
                                 data.data.referenced_motions
                             );
                     }
-                    motion.recommendationLabel = recommendation;
+                    motion.recommendationLabel = recommendation.trim();
                 } else {
                     motion.recommendationLabel = null;
                 }

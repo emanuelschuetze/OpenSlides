@@ -907,10 +907,13 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
             return null;
         }
         let state = this.translate.instant(motion.state.name);
+        if (state === 'Sonstiges') {
+            state = '';
+        }
         if (motion.stateExtension && motion.state.show_state_extension_field) {
             state += ' ' + this.parseMotionPlaceholders(motion.stateExtension);
         }
-        return state;
+        return state.trim();
     }
 
     /**
@@ -923,10 +926,13 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
     public getExtendedRecommendationLabel(motion: ViewMotion): string {
         if (motion.recommendation) {
             let rec = this.translate.instant(motion.recommendation.recommendation_label);
+            if (rec === 'Sonstiges') {
+                rec = '';
+            }
             if (motion.recommendationExtension && motion.recommendation.show_recommendation_extension_field) {
                 rec += ' ' + this.parseMotionPlaceholders(motion.recommendationExtension);
             }
-            return rec;
+            return rec.trim();
         }
         return '';
     }
