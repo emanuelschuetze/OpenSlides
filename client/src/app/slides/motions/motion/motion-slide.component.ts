@@ -126,6 +126,9 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
     public getRecommendationLabel(): string {
         let recommendation = this.translate.instant(this.data.data.recommendation);
         if (this.data.data.recommendation_extension) {
+            if (recommendation === 'Sonstiges') {
+                recommendation = '';
+            }
             recommendation +=
                 ' ' +
                 this.replaceReferencedMotions(
@@ -133,7 +136,7 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
                     this.data.data.referenced_motions
                 );
         }
-        return recommendation;
+        return recommendation.trim();
     }
 
     /**
