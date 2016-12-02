@@ -132,3 +132,17 @@ CHANNEL_LAYERS = {"default": {"BACKEND": "channels.layers.InMemoryChannelLayer"}
 
 # Enable updating the last_login field for users on every login.
 ENABLE_LAST_LOGIN_FIELD = False
+
+# Customization of OpenSlides apps
+MOTION_IDENTIFIER_MIN_DIGITS = 3
+MOTION_IDENTIFIER_WITHOUT_BLANKS = True
+MOTIONS_ALLOW_AMENDMENTS_OF_AMENDMENTS = False
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 8,
+        }
+    },
+]

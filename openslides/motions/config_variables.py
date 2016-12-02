@@ -49,7 +49,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name="motions_preamble",
-        default_value="The assembly may decide:",
+        default_value='Die Konferenz möge beschließen:',
         label="Motion preamble",
         weight=320,
         group="Motions",
@@ -100,7 +100,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name="motions_disable_reason_on_projector",
-        default_value=False,
+        default_value=True,
         input_type="boolean",
         label="Hide reason on projector",
         weight=326,
@@ -146,7 +146,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name="motions_recommendations_by",
-        default_value="",
+        default_value='Empfehlung der ABK',
         label="Name of recommender",
         help_text="Will be displayed as label before selected recommendation. Use an empty value to disable the recommendation system.",
         weight=332,
@@ -155,7 +155,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name="motions_statute_recommendations_by",
-        default_value="",
+        default_value='',
         label="Name of recommender for statute amendments",
         help_text="Will be displayed as label before selected recommendation in statute amendments.",
         weight=333,
@@ -208,7 +208,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name="motions_identifier_min_digits",
-        default_value=1,
+        default_value=3,
         input_type="integer",
         label="Number of minimal digits for identifier",
         help_text="Uses leading zeros to sort motions correctly by identifier.",
@@ -243,7 +243,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name="motions_amendments_enabled",
-        default_value=False,
+        default_value=True,
         input_type="boolean",
         label="Activate amendments",
         weight=351,
@@ -263,7 +263,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name="motions_amendments_prefix",
-        default_value="-",
+        default_value='-Ä',
         label="Prefix for the identifier for amendments",
         weight=353,
         group="Motions",

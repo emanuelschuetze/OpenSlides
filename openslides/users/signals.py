@@ -81,7 +81,9 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict[permission_string] = permission
 
     # Default (pk 1 == GROUP_DEFAULT_PK)
-    base_permissions = ()
+    base_permissions = (
+        permission_dict["users.can_change_password"],
+    )
     group_default = Group(pk=GROUP_DEFAULT_PK, name="Default")
     group_default.save(skip_autoupdate=True)
     group_default.permissions.add(*base_permissions)
