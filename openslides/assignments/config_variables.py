@@ -33,7 +33,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name="assignments_poll_100_percent_base",
-        default_value="YES_NO_ABSTAIN",
+        default_value="YES_NO",
         input_type="choice",
         label="The 100-%-base of an election result consists of",
         choices=(

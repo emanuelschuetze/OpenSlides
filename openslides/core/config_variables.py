@@ -54,10 +54,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name="general_event_legal_notice",
-        default_value='<a href="http://www.openslides.org">OpenSlides</a> is a '
-        "free web based presentation and assembly system for "
-        "visualizing and controlling agenda, motions and "
-        "elections of an assembly.",
+        default_value='<i>[Bitte ergänzen]</i>',
         input_type="markupText",
         label="Legal notice",
         weight=132,
@@ -138,7 +135,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name="general_csv_separator",
-        default_value=",",
+        default_value=";",
         label="Separator used for all csv exports and examples",
         weight=160,
         group="General",

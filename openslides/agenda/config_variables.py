@@ -37,7 +37,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name="agenda_number_prefix",
-        default_value="",
+        default_value='TOP',
         label="Numbering prefix for agenda items",
         help_text="This prefix will be set if you run the automatic agenda numbering.",
         weight=206,
@@ -130,7 +130,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name="agenda_countdown_warning_time",
-        default_value=0,
+        default_value=20,
         input_type="integer",
         label="Show orange countdown in the last x seconds of speaking time",
         help_text="Enter duration in seconds. Choose 0 to disable warning color.",
