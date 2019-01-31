@@ -8,6 +8,10 @@
 @import './assets/styles/openslides-dark-theme.scss';
 @import './assets/styles/openslides-green-theme.scss';
 @import './assets/styles/openslides-developer-theme.scss';
+// custom themes
+@import './assets/styles/igm-theme.scss';
+@import './assets/styles/gew-theme.scss';
+@import './assets/styles/verdi-theme.scss';
 
 /** Import the component-related style sheets here */
 @import './app/site/site.component.scss-theme.scss';
@@ -101,6 +105,19 @@ $narrow-spacing: (
     @include openslides-components-theme($openslides-green-theme);
     $ngrid-material-theme: pbl-light-theme($openslides-green-theme);
     @include pbl-ngrid-theme(map-merge($ngrid-material-theme, $narrow-spacing));
+}
+// custom themes
+.igm-theme {
+    @include angular-material-theme($igm-theme);
+    @include openslides-components-theme($igm-theme);
+}
+.gew-theme {
+    @include angular-material-theme($gew-theme);
+    @include openslides-components-theme($gew-theme);
+}
+.verdi-theme {
+    @include angular-material-theme($verdi-theme);
+    @include openslides-components-theme($verdi-theme);
 }
 
 .openslides-developer-dark-theme {
