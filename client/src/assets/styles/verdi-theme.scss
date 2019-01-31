@@ -1,0 +1,42 @@
+$verdi: (
+    50 : #fce0e9,
+    100 : #f7b3c7,
+    200 : #f180a2,
+    300 : #eb4d7d,
+    400 : #e72661,
+    500 : #e30045,
+    600 : #e0003e,
+    700 : #dc0036,
+    800 : #d8002e,
+    900 : #d0001f,
+    A100 : #fff8f9,
+    A200 : #ffc5ca,
+    A400 : #ff929c,
+    A700 : #ff7985,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #ffffff,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+
+$openslides-primary: mat-palette($verdi);
+$openslides-accent: mat-palette($verdi);
+$openslides-warn: mat-palette($verdi);
+
+$verdi-theme: mat-light-theme(
+    $openslides-primary,
+    $openslides-accent,
+    $openslides-warn
+)
