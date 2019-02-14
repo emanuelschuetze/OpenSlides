@@ -33,7 +33,7 @@ export class GlobalSpinnerComponent implements OnInit, OnDestroy {
     /**
      * Constant string as default message when the spinner is shown.
      */
-    private LOADING = this.translate.instant('Loading data. Please wait ...');
+    private LOADING = this.translate.instant('Daten werden geladen. Bitte warten ...');
 
     /**
      * Constructor

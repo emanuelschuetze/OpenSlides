@@ -48,7 +48,7 @@ RESET_PASSWORD_VERBOSE_ERRORS = True
 # For SSL/TLS specific settings see https://docs.djangoproject.com/en/1.11/topics/email/#smtp-backend
 
 EMAIL_HOST = 'localhost'
-EMAIL_PORT = 587
+EMAIL_PORT = 25
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 DEFAULT_FROM_EMAIL = 'noreply@example.com'

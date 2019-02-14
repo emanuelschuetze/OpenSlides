@@ -591,7 +591,7 @@
         <!-- Selecting statute paragraphs for amendment -->
         <div class="statute-amendment-selector" *ngIf="newMotion && statuteParagraphs.length > 0 && statutesEnabled">
             <mat-checkbox formControlName="statute_amendment" (change)="onStatuteAmendmentChange($event)">
-                {{ 'Statute amendment' | translate }}
+                {{ 'Antrag zur Satzung' | translate }}
             </mat-checkbox>
 
             <mat-form-field *ngIf="contentForm.value.statute_amendment">
