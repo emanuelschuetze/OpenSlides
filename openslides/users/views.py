@@ -842,7 +842,8 @@ class PasswordResetView(APIView):
             ):
                 context = {
                     "email": to_email,
-                    "site_name": site_name,
+                    "site_name": config["general_event_name"],
+                    "site_url": config["users_pdf_url"],
                     "protocol": "https" if self.use_https else "http",
                     "domain": current_site.domain,
                     "path": "/login/reset-password-confirm/",
@@ -856,16 +857,20 @@ class PasswordResetView(APIView):
             else:
                 # User is not allowed to reset his permission. Send only short message.
                 body = f"""
-                    You do not have permission to reset your password at {site_name}.
+                    Sie haben keine Berechtigung zum Zurücksetzen Ihres Passworts.
 
-                    Please contact your local administrator.
+                    Bitte kontaktieren Sie den Administrator/Veranstalter.
 
-                    Your username, in case you've forgotten: {user.get_username()}
+                    Zur Vollständigkeit Ihr Nutzername: {user.get_username()}
+
+                    --
+                    {config["general_event_name"]}
+                    {config["users_pdf_url"]}
                     """
             # Send a django.core.mail.EmailMessage to `to_email`.
-            subject = f"Password reset for {site_name}"
+            subject = f"OpenSlides-Passwort zurücksetzen"
             subject = "".join(subject.splitlines())
-            from_email = None  # TODO: Add nice from_email here.
+            from_email = config["users_email_sender"] + " <" + settings.DEFAULT_FROM_EMAIL + ">"
             email_message = mail.EmailMessage(subject, body, from_email, [to_email])
             try:
                 email_message.send()
@@ -910,17 +915,16 @@ class PasswordResetView(APIView):
         """
         return textwrap.dedent(
             """
-            You're receiving this email because you requested a password reset for your user account at {site_name}.
+            Sie erhalten diese E-Mail, weil Sie ein neues Passwort für Ihr OpenSlides-Benutzerkonto angefragt haben.
 
-            Please go to the following page and choose a new password:
+            Bitte öffnen Sie folgenden Link und wählen ein neues Passwort:
+            {site_url}{path}?user_id={user_id}&token={token}
 
-            {protocol}://{domain}{path}?user_id={user_id}&token={token}
+            Zur Vollständigkeit Ihr Nutzername: {username}
 
-            Your username, in case you've forgotten: {username}
-
-            Thanks for using our site!
-
-            The {site_name} team.
+            --
+            {site_name}
+            {site_url}
             """
         ).format(**context)
 
