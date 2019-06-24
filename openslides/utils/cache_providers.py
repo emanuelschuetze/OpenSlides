@@ -4,19 +4,17 @@ from collections import defaultdict
 from textwrap import dedent
 from typing import Any, Callable, Coroutine, Dict, List, Optional, Set, Tuple
 
+import aioredis
 from django.core.exceptions import ImproperlyConfigured
 from typing_extensions import Protocol
 
 from . import logging
-from .redis import use_redis
+from .redis import get_connection
 from .schema_version import SchemaVersion
 from .utils import split_element_id, str_dict_to_bytes
 
 
 logger = logging.getLogger(__name__)
-
-if use_redis:
-    from .redis import get_connection, aioredis
 
 
 class CacheReset(Exception):

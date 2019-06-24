@@ -8,6 +8,7 @@ from . import logging
 from .auth import async_anonymous_is_enabled
 from .autoupdate import AutoupdateFormat
 from .cache import ChangeIdTooLowError, element_cache, split_element_id
+from .push import ChangeIdTooHighException, push_service
 from .utils import get_worker_id
 from .websocket import ProtocollAsyncJsonWebsocketConsumer
 
@@ -31,9 +32,14 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         self.projector_hash: Dict[int, int] = {}
+        self.listen_projector_ids: List[int] = []
         SiteConsumer.ID_COUNTER += 1
         self._id = get_worker_id() + "-" + str(SiteConsumer.ID_COUNTER)
         super().__init__(*args, **kwargs)
+
+    @property
+    def user_id(self):
+        return self.scope["user"]["id"]
 
     async def connect(self) -> None:
         """
@@ -72,10 +78,19 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
         await self.accept()
 
         if change_id is not None:
-            logger.debug(f"connect: change id {change_id} ({self._id})")
+            # logger.debug(f"connect: change id {change_id} ({self._id})")
             await self.send_autoupdate(change_id)
+
+            if change_id > 0:
+                # The client sends already with +1, but we do just need the _current_ change_id
+                change_id -= 1
         else:
-            logger.debug(f"connect: no change id ({self._id})")
+            change_id = await element_cache.get_current_change_id()
+            # logger.debug(f"connect: no change id ({self._id})")
+
+        self.change_id = change_id
+        logger.info(f"{self._id} CONNECT, change id: {change_id}")
+        await push_service.add_consumer(self)
 
     async def disconnect(self, close_code: int) -> None:
         """
@@ -86,6 +101,7 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
         logger.debug(
             f"disconnect code={close_code} active_secs={active_seconds} ({self._id})"
         )
+        await push_service.remove_consumer(self)
 
     async def send_notify(self, event: Dict[str, Any]) -> None:
         """
@@ -113,7 +129,8 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
         change_id: int,
         max_change_id: Optional[int] = None,
         in_response: Optional[str] = None,
-    ) -> None:
+        raise_too_high_change_id: bool = False,
+    ) -> str:
         """
         Sends an autoupdate to the client from change_id to max_change_id.
         If max_change_id is None, the current change id will be used.
@@ -125,15 +142,18 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
 
         if change_id == max_change_id + 1:
             # The client is up-to-date, so nothing will be done
-            return
+            return "no autoupdate; client is up-to-date"
 
         if change_id > max_change_id:
             message = f"Requested change_id {change_id} is higher this highest change_id {max_change_id}."
-            await self.send_error(
-                code=WEBSOCKET_CHANGE_ID_TOO_HIGH,
-                message=message,
-                in_response=in_response,
-            )
+            if raise_too_high_change_id:
+                raise ChangeIdTooHighException(message)
+            else:
+                await self.send_error(
+                    code=WEBSOCKET_CHANGE_ID_TOO_HIGH,
+                    message=message,
+                    in_response=in_response,
+                )
             return
 
         try:
@@ -157,6 +177,8 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
             # Set the current from_change_id, if it is the first skipped autoupdate
             if not self.skipped_autoupdate_from_change_id:
                 self.skipped_autoupdate_from_change_id = change_id
+
+            return f"skipped autoupdate: skipped change id: {self.skipped_autoupdate_from_change_id}"
         else:
             # Normal autoupdate with data
             from_change_id = change_id
@@ -177,6 +199,7 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
                 ),
                 in_response=in_response,
             )
+            return f"autoupdate: all_data={all_data} from_change_id={change_id} to_change_id={max_change_id}"
 
     async def send_data(self, event: Dict[str, Any]) -> None:
         """

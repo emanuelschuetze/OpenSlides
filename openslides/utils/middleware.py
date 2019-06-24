@@ -6,7 +6,6 @@ from channels.auth import (
     SessionMiddleware,
     _get_user_session_key,
 )
-from django.conf import settings
 from django.contrib.auth import BACKEND_SESSION_KEY, HASH_SESSION_KEY
 from django.utils.crypto import constant_time_compare
 
@@ -53,7 +52,7 @@ async def get_user(scope: Dict[str, Any]) -> Dict[str, Any]:
     except KeyError:
         pass
     else:
-        if backend_path in settings.AUTHENTICATION_BACKENDS:
+        if backend_path == "CUSTOM":  # TODO: rename, global var.
             user = await element_cache.get_element_data("users/user", user_id)
             if user:
                 # Verify the session

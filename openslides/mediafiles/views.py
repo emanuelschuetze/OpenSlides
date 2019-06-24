@@ -1,11 +1,13 @@
+from asgiref.sync import async_to_sync
 from django.http import HttpResponseForbidden, HttpResponseNotFound
 from django.http.request import QueryDict
 from django.views.static import serve
 
-from openslides.core.models import Projector
+from openslides.core.config import config
 
 from ..utils.auth import has_perm, in_some_groups
 from ..utils.autoupdate import inform_changed_data
+from ..utils.cache import element_cache
 from ..utils.rest_api import ModelViewSet, Response, ValidationError, list_route
 from .access_permissions import MediafileAccessPermissions
 from .config import watch_and_update_configs
@@ -201,6 +203,26 @@ class MediafileViewSet(ModelViewSet):
         return Response()
 
 
+def is_logo(mediafile):
+    if mediafile["is_directory"]:
+        return False
+    for key in config["logos_available"]:
+        url = mediafile["media_url_prefix"] + mediafile["path"]
+        if config[key]["path"] == url:
+            return True
+    return False
+
+
+def is_font(mediafile):
+    if mediafile["is_directory"]:
+        return False
+    for key in config["fonts_available"]:
+        url = mediafile["media_url_prefix"] + mediafile["path"]
+        if config[key]["path"] == url:
+            return True
+    return False
+
+
 def get_mediafile(request, path):
     """
     returnes the mediafile for the requested path and checks, if the user is
@@ -212,36 +234,58 @@ def get_mediafile(request, path):
     """
     if not path:
         raise Mediafile.DoesNotExist()
+    can_see = has_perm(request.user_id, "mediafiles.can_see")
+
     parts = path.split("/")
-    parent = None
-    can_see = has_perm(request.user, "mediafiles.can_see")
+    parent_id = None
+    mediafiles = async_to_sync(element_cache.get_collection_data)(
+        "mediafiles/mediafile"
+    ).values()
     for i, part in enumerate(parts):
         is_directory = i < len(parts) - 1
+        # Search mediafile
+        mediafile = None
         if is_directory:
-            mediafile = Mediafile.objects.get(
-                parent=parent, is_directory=is_directory, title=part
-            )
+            for m in mediafiles:
+                if (
+                    m["parent_id"] == parent_id
+                    and m["is_directory"] == is_directory
+                    and m["title"] == part
+                ):
+                    mediafile = m
         else:
-            mediafile = Mediafile.objects.get(
-                parent=parent, is_directory=is_directory, original_filename=part
-            )
-        if mediafile.access_groups.exists() and not in_some_groups(
-            request.user.id, [group.id for group in mediafile.access_groups.all()]
+            for m in mediafiles:
+                if (
+                    m["parent_id"] == parent_id
+                    and m["is_directory"] == is_directory
+                    and m["original_filename"] == part
+                ):
+                    mediafile = m
+        if not mediafile:
+            raise Mediafile.DoesNotExist()
+        if mediafile["access_groups_id"] and not in_some_groups(
+            request.user_id, mediafile["access_groups_id"]
         ):
             can_see = False
-        parent = mediafile
+        parent_id = mediafile["id"]
 
     # Check, if this file is projected
     is_projected = False
-    for projector in Projector.objects.all():
-        for element in projector.elements:
+    projectors = async_to_sync(element_cache.get_collection_data)(
+        "core/projector"
+    ).values()
+    for projector in projectors:
+        for element in projector["elements"]:
             name = element.get("name")
             id = element.get("id")
-            if name == "mediafiles/mediafile" and id == mediafile.id:
+            if name == "mediafiles/mediafile" and id == mediafile["id"]:
                 is_projected = True
                 break
 
-    if not can_see and not mediafile.is_special_file and not is_projected:
+    # Check is special file
+    is_special_file = is_logo(mediafile) or is_font(mediafile)
+
+    if not can_see and not is_special_file and not is_projected:
         mediafile = None
 
     return mediafile
@@ -254,6 +298,8 @@ def protected_serve(request, path, document_root=None, show_indexes=False):
         return HttpResponseNotFound(content="Not found.")
 
     if mediafile:
-        return serve(request, mediafile.mediafile.name, document_root, show_indexes)
+        return serve(
+            request, mediafile["mediafile"]["name"], document_root, show_indexes
+        )
     else:
         return HttpResponseForbidden(content="Forbidden.")

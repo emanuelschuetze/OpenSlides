@@ -16,7 +16,6 @@ from django.views.generic.base import View
 from openslides.utils.utils import split_element_id
 
 from .. import __license__ as license, __url__ as url, __version__ as version
-from ..users.models import User
 from ..utils import views as utils_views
 from ..utils.arguments import arguments
 from ..utils.auth import GROUP_ADMIN_PK, anonymous_is_enabled, has_perm, in_some_groups
@@ -455,6 +454,30 @@ class CountdownViewSet(ModelViewSet):
 # Special API views
 
 
+class ROErrorView(utils_views.APIView):
+    """
+    Returns an error message to requests to /rest.
+    """
+
+    http_method_names = [
+        "get",
+        "post",
+        "put",
+        "patch",
+        "delete",
+        "head",
+        "options",
+        "trace",
+    ]
+
+    def respond_with_error(self, request):
+        return Response(
+            {"detail": "You are not allowed to do that (ReadOnly instance)"}, status=400
+        )
+
+    get = post = put = patch = delete = head = options = trace = respond_with_error
+
+
 class ServerTime(utils_views.APIView):
     """
     Returns the server time as UNIX timestamp.
@@ -480,7 +503,6 @@ class VersionView(utils_views.APIView):
             "openslides_license": license,
             "openslides_url": url,
             "plugins": [],
-            "no_name_yet_users": User.objects.filter(last_login__isnull=False).count(),
         }
         # Versions of plugins.
         for plugin in settings.INSTALLED_PLUGINS:

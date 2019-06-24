@@ -6,10 +6,12 @@ from typing import Any, Dict, List
 
 from django.apps import AppConfig
 from django.conf import settings
-from django.db.models.signals import post_migrate, pre_delete
+from django.db.models.signals import pre_delete
 
 from openslides.utils import logging
-from openslides.utils.schema_version import schema_version_handler
+
+
+logger = logging.getLogger(__name__)
 
 
 class CoreAppConfig(AppConfig):
@@ -65,9 +67,6 @@ class CoreAppConfig(AppConfig):
             get_permission_change_data, dispatch_uid="core_get_permission_change_data"
         )
 
-        post_migrate.connect(
-            manage_config, sender=self, dispatch_uid="core_manage_config"
-        )
         pre_delete.connect(
             autoupdate_for_many_to_many_relations,
             dispatch_uid="core_autoupdate_for_many_to_many_relations",
@@ -173,26 +172,7 @@ class CoreAppConfig(AppConfig):
             config_groups[-1]["subgroups"][-1]["items"].append(config_variable.data)
         constants["ConfigVariables"] = config_groups
 
-        constants["SchemaVersion"] = schema_version_handler.get()
-
         return constants
-
-
-def manage_config(**kwargs):
-    """
-    Should be run after every migration. Saves default values
-    of all non db-existing config objects into the db. Deletes all
-    unnecessary old config values, e.g. all db entries, that does
-    not have a config_variable anymore. Increments the config version,
-    if at least one of the operations altered some data.
-    """
-    from .config import config
-
-    altered = config.save_default_values()
-    altered = config.cleanup_old_config_values() or altered
-    if altered:
-        config.increment_version()
-        logging.getLogger(__name__).info("Updated config variables")
 
 
 def startup():
@@ -205,9 +185,18 @@ def startup():
         return
 
     from openslides.utils.constants import set_constants, get_constants_from_apps
-    from openslides.utils.cache import element_cache
-    from openslides.core.models import History
 
-    element_cache.ensure_schema_version()
     set_constants(get_constants_from_apps())
-    History.objects.build_history()
+
+    from openslides.utils.push import push_service
+
+    logger.info("startup")
+    push_service.start_push()
+
+    channel_layer_config = getattr(settings, "CHANNEL_LAYERS")
+    if (
+        channel_layer_config is not None
+        and channel_layer_config["default"]["BACKEND"]
+        != "channels.layers.InMemoryChannelLayer"
+    ):
+        raise RuntimeError("Please do not alter the default CHANNEL_LAYER config.")

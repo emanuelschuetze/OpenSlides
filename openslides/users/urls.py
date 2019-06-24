@@ -1,5 +1,7 @@
 from django.conf.urls import url
 
+from openslides.core import views as core_views
+
 from . import views
 
 
@@ -8,15 +10,11 @@ urlpatterns = [
     url(r"^login/$", views.UserLoginView.as_view(), name="user_login"),
     url(r"^logout/$", views.UserLogoutView.as_view(), name="user_logout"),
     url(r"^whoami/$", views.WhoAmIView.as_view(), name="user_whoami"),
-    url(r"^setpassword/$", views.SetPasswordView.as_view(), name="user_setpassword"),
+    url(r"^setpassword/", core_views.ROErrorView.as_view(), name="RO_error_view"),
+    url(r"^reset-password/", core_views.ROErrorView.as_view(), name="RO_error_view"),
     url(
-        r"^reset-password/$",
-        views.PasswordResetView.as_view(),
-        name="user_reset_password",
-    ),
-    url(
-        r"^reset-password-confirm/$",
-        views.PasswordResetConfirmView.as_view(),
-        name="password_reset_confirm",
+        r"^reset-password-confirm/",
+        core_views.ROErrorView.as_view(),
+        name="RO_error_view",
     ),
 ]

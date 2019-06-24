@@ -59,6 +59,7 @@ class UserFullSerializer(ModelSerializer):
         fields = USERCANSEEEXTRASERIALIZER_FIELDS + (
             "default_password",
             "session_auth_hash",
+            "password",
         )
         read_only_fields = ("last_email_send",)
 

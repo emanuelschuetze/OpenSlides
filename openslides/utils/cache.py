@@ -8,13 +8,8 @@ from asgiref.sync import async_to_sync
 from django.apps import apps
 
 from . import logging
-from .cache_providers import (
-    Cachable,
-    ElementCacheProvider,
-    MemoryCacheProvider,
-    RedisCacheProvider,
-)
-from .redis import use_redis
+from .cache_providers import Cachable, ElementCacheProvider
+from .ro_cache_provider import RedisMemoryCacheProvider
 from .schema_version import SchemaVersion, schema_version_handler
 from .utils import get_element_id, split_element_id
 
@@ -65,7 +60,7 @@ class ElementCache:
 
     def __init__(
         self,
-        cache_provider_class: Type[ElementCacheProvider] = RedisCacheProvider,
+        cache_provider_class: Type[ElementCacheProvider] = RedisMemoryCacheProvider,
         cachable_provider: Callable[[], List[Cachable]] = get_all_cachables,
         default_change_id: Optional[int] = None,
     ) -> None:
@@ -211,7 +206,7 @@ class ElementCache:
                 all_data[collection_string] = await restricter(
                     user_id, all_data[collection_string]
                 )
-        return dict(all_data)
+        return all_data
 
     async def get_all_data_dict(self) -> Dict[str, Dict[int, Dict[str, Any]]]:
         """
@@ -226,7 +221,7 @@ class ElementCache:
         for element_id, data in (await self.cache_provider.get_all_data()).items():
             collection_string, id = split_element_id(element_id)
             all_data[collection_string][id] = json.loads(data.decode())
-        return dict(all_data)
+        return all_data
 
     async def get_collection_data(
         self, collection_string: str
@@ -305,30 +300,38 @@ class ElementCache:
         }
 
         if user_id is not None:
-            # the list(...) is important, because `changed_elements` will be
-            # altered during iteration and restricting data
-            for collection_string, elements in list(changed_elements.items()):
-                cacheable = self.cachables[collection_string]
-                restricted_elements = await cacheable.restrict_elements(
-                    user_id, elements
-                )
-
-                # If the model is personalized, it must not be deleted for other users
-                if not cacheable.personalized_model:
-                    # Add removed objects (through restricter) to deleted elements.
-                    element_ids = set([element["id"] for element in elements])
-                    restricted_element_ids = set(
-                        [element["id"] for element in restricted_elements]
-                    )
-                    for id in element_ids - restricted_element_ids:
-                        deleted_elements.append(get_element_id(collection_string, id))
-
-                if not restricted_elements:
-                    del changed_elements[collection_string]
-                else:
-                    changed_elements[collection_string] = restricted_elements
+            await self.restrict(changed_elements, deleted_elements, user_id)
 
         return (changed_elements, deleted_elements)
+
+    async def restrict(
+        self,
+        changed_elements: Dict[str, List[Dict[str, Any]]],
+        deleted_elements: List[str],
+        user_id: int,
+    ) -> None:
+        """
+        This method restricts the given data for the given user. Attention: The method
+        arguments will be modified.
+        """
+        # the list(...) is important, because `changed_elements` will be
+        # altered during iteration and restricting data
+        for collection_string, elements in list(changed_elements.items()):
+            restricter = self.cachables[collection_string].restrict_elements
+            restricted_elements = await restricter(user_id, elements)
+
+            # Add removed objects (through restricter) to deleted elements.
+            element_ids = set([element["id"] for element in elements])
+            restricted_element_ids = set(
+                [element["id"] for element in restricted_elements]
+            )
+            for id in element_ids - restricted_element_ids:
+                deleted_elements.append(get_element_id(collection_string, id))
+
+            if not restricted_elements:
+                del changed_elements[collection_string]
+            else:
+                changed_elements[collection_string] = restricted_elements
 
     async def get_current_change_id(self) -> int:
         """
@@ -344,17 +347,12 @@ class ElementCache:
         """
         return await self.cache_provider.get_lowest_change_id()
 
+    async def get_schema_version(self) -> Dict[str, Any]:
+        return await self.cache_provider.get_schema_version()
+
 
 def load_element_cache() -> ElementCache:
-    """
-    Generates an element cache instance.
-    """
-    if use_redis:
-        cache_provider_class: Type[ElementCacheProvider] = RedisCacheProvider
-    else:
-        cache_provider_class = MemoryCacheProvider
-
-    return ElementCache(cache_provider_class=cache_provider_class)
+    return ElementCache(cache_provider_class=RedisMemoryCacheProvider)
 
 
 # Set the element_cache

@@ -5,11 +5,14 @@ from typing import Iterable, List, Set, Union
 from asgiref.sync import async_to_sync
 from django.conf import settings
 from django.contrib.auth import (
-    login as auth_login,
-    logout as auth_logout,
+    BACKEND_SESSION_KEY,
+    HASH_SESSION_KEY,
+    SESSION_KEY,
+    _get_user_session_key,
+    get_user_model,
     update_session_auth_hash,
 )
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import Permission
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.tokens import default_token_generator
@@ -18,6 +21,8 @@ from django.core import mail
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction
 from django.http.request import QueryDict
+from django.middleware.csrf import rotate_token
+from django.utils.crypto import constant_time_compare
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
@@ -675,12 +680,13 @@ class WhoAmIDataView(APIView):
         user. Appends also a flag if guest users are enabled in the config.
         Appends also the serialized user if available.
         """
-        user_id = self.request.user.pk or 0
+        # user_id = self.request.user.pk or 0
+        user_id = self.request.user_id
         guest_enabled = anonymous_is_enabled()
 
         if user_id:
             user_data = async_to_sync(element_cache.get_element_data)(
-                self.request.user.get_collection_string(), user_id, user_id
+                get_user_model().get_collection_string(), user_id, user_id
             )
             group_ids = user_data["groups_id"] or [GROUP_DEFAULT_PK]
         else:
@@ -712,18 +718,54 @@ class UserLoginView(WhoAmIDataView):
 
     http_method_names = ["get", "post"]
 
-    def post(self, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         # If the client tells that cookies are disabled, do not continue as guest (if enabled)
-        if not self.request.data.get("cookies", True):
+        if not request.data.get("cookies", True):
             raise ValidationError(
                 {"detail": "Cookies have to be enabled to use OpenSlides."}
             )
-        form = AuthenticationForm(self.request, data=self.request.data)
-        if not form.is_valid():
+
+        username = request.data.get("username")
+        raw_password = request.data.get("password")
+        if not isinstance(username, str) or not isinstance(raw_password, str):
             raise ValidationError({"detail": "Username or password is not correct."})
-        self.user = form.get_user()
-        auth_login(self.request, self.user)
-        return super().post(*args, **kwargs)
+
+        # Find user
+        user_id = None
+        user_collection_data = async_to_sync(element_cache.get_collection_data)(
+            get_user_model().get_collection_string()
+        )
+        for id, user in user_collection_data.items():
+            if username == user["username"]:
+                user_id = id
+                session_auth_hash = user["session_auth_hash"]
+                password = user["password"]
+                break
+
+        if not user_id or not check_password(raw_password, password):
+            raise ValidationError({"detail": "Username or password is not correct."})
+
+        # Auth_login
+        if SESSION_KEY in request.session:
+            if _get_user_session_key(request) != 1 or (
+                session_auth_hash
+                and not constant_time_compare(
+                    request.session.get(HASH_SESSION_KEY, ""), session_auth_hash
+                )
+            ):
+                # To avoid reusing another user's session, create a new, empty
+                # session if the existing session corresponds to a different
+                # authenticated user.
+                request.session.flush()
+        else:
+            request.session.cycle_key()
+
+        request.session[SESSION_KEY] = str(user_id)
+        request.session[BACKEND_SESSION_KEY] = "CUSTOM"
+        request.session[HASH_SESSION_KEY] = session_auth_hash
+        request.user_id = 1
+        rotate_token(request)
+        return super().post(request, *args, **kwargs)
 
     def get_context_data(self, **context):
         """
@@ -738,16 +780,6 @@ class UserLoginView(WhoAmIDataView):
         if self.request.method == "GET":
             if config["general_login_info_text"]:
                 context["login_info_text"] = config["general_login_info_text"]
-            else:
-                try:
-                    user = User.objects.get(username="admin")
-                    if user.check_password("admin"):
-                        context["login_info_text"] = (
-                            f"Use <strong>admin</strong> and <strong>admin</strong> for your first login.<br>"
-                            "Please change your password to hide this message!"
-                        )
-                except User.DoesNotExist:
-                    pass
             # Add the privacy policy and legal notice, so the client can display it
             # even, it is not logged in.
             context["privacy_policy"] = config["general_event_privacy_policy"]
@@ -769,9 +801,7 @@ class UserLogoutView(WhoAmIDataView):
     http_method_names = ["post"]
 
     def post(self, *args, **kwargs):
-        if not self.request.user.is_authenticated:
-            raise ValidationError({"detail": "You are not authenticated."})
-        auth_logout(self.request)
+        self.request.session.flush()
         return super().post(*args, **kwargs)
 
 

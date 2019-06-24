@@ -1,6 +1,8 @@
 import asyncio
 from typing import Any
 
+import aioredis
+from channels_redis.core import ConnectionPool
 from django.conf import settings
 
 from . import logging
@@ -8,21 +10,14 @@ from . import logging
 
 logger = logging.getLogger(__name__)
 
-try:
-    import aioredis
-except ImportError:
-    use_redis = False
-else:
-    from channels_redis.core import ConnectionPool
 
-    # set use_redis to true, if there is a value for REDIS_ADDRESS in the settings
-    redis_address = getattr(settings, "REDIS_ADDRESS", "")
-    use_redis = bool(redis_address)
-    if use_redis:
-        logger.info(f"Redis address {redis_address}")
+redis_address = getattr(settings, "REDIS_ADDRESS", "")
+if not redis_address:
+    raise RuntimeError("You need to provide 'REDIS_ADDRESS' in the settings.py")
+logger.info(f"Redis address {redis_address}")
 
-    pool = ConnectionPool({"address": redis_address})
-    counter = 0
+pool = ConnectionPool({"address": redis_address})
+counter = 0
 
 
 class RedisConnectionContextManager:

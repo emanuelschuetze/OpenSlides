@@ -1,9 +1,7 @@
 from django.conf import settings
 from django.conf.urls import include, url
-from django.views.generic import RedirectView
 
 from openslides.mediafiles.views import protected_serve
-from openslides.utils.rest_api import router
 
 from .core import views as core_views
 
@@ -15,9 +13,8 @@ urlpatterns = [
         protected_serve,
         {"document_root": settings.MEDIA_ROOT},
     ),
-    # URLs for the rest system, redirect /rest to /rest/
-    url(r"^rest$", RedirectView.as_view(url="/rest/", permanent=True)),
-    url(r"^rest/", include(router.urls)),
+    # Raise errors on every request to /rest, becuase this is a ReadOnly instance!
+    url(r"^rest/", core_views.ROErrorView.as_view(), name="RO_error_view"),
     # Other urls defined by modules and plugins
     url(r"^apps/", include("openslides.urls_apps")),
     # Main entry point for all angular pages.
