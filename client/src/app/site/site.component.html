@@ -99,6 +99,10 @@
                 </a>
             </span>
             <mat-divider></mat-divider>
+            <a [@navItemAnim] mat-list-item routerLinkActive="active" (click)="toggleSearch()">
+                <mat-icon>search</mat-icon>
+                <span translate>Search</span>
+            </a>
             <a
                 [@navItemAnim]
                 mat-list-item
