@@ -20,16 +20,20 @@
 #sidebox {
     width: 260px;
     right: 0;
-    background: #d3d3d3;
-    border-radius: 7px 0 0 7px;
+    background: #9b9f9f;
     padding: 3px 7px 10px 10px;
     position: fixed;
     z-index: 5;
     word-break: break-word;
 
     h3 {
+        color: white;
         margin-top: 10px;
         margin-bottom: 0px;
+    }
+
+    span {
+        color: black;
     }
 }
 
@@ -45,13 +49,22 @@
     position: relative;
 }
 
-/* override the absolute position of outside linenumbers on motion slide */
-.motion-text {
-    &.line-numbers-outside {
-        .os-line-number {
-            &:after {
-                top: 19px;
-                font-size: 15px;
+#motion-slide-text-wrapper {
+    /* override the absolute position of outside linenumbers on motion slide */
+    .motion-text {
+        ins {
+            color: #ceb54f;
+        }
+        del {
+            color: black;
+        }
+        &.line-numbers-outside {
+            .os-line-number {
+                &:after {
+                    color: white;
+                    top: 19px;
+                    font-size: 15px;
+                }
             }
         }
     }
