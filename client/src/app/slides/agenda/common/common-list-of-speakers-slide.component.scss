@@ -5,24 +5,31 @@
 
 .currentSpeaker {
     font-weight: bold;
-    margin: 20px 0 16px;
+    margin: 35px 0 16px 0px;
 
-    .mat-icon,
-    span {
-        vertical-align: middle;
-    }
-    span {
-        padding-left: 8px;
+    .mat-icon {
+        font-size: 85%;
     }
 }
 
 .nextSpeakers {
     margin: 0;
-    padding-left: 6px;
-    margin-top: 20px !important;
+    padding-left: 0px;
+    margin-top: 35px !important;
+    margin-left: 25px !important;
 
     li {
-        list-style-position: inside;
+        margin-left: 20px;
+        margin-top: 12px;
+        padding-left: 10px;
         line-height: 150%;
+
+        .mat-icon {
+            font-size: 85%;
+        }
     }
+}
+
+#slide-text-wrapper {
+    overflow: hidden;
 }

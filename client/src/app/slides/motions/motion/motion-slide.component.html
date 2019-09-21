@@ -2,7 +2,7 @@
     <div
         id="sidebox"
         *ngIf="data.data.show_meta_box"
-        [ngStyle]="{ 'margin-top': projector.show_header_footer ? '144px' : '94px' }"
+        [ngStyle]="{ 'margin-top': projector.show_header_footer ? '144px' : '36px' }"
     >
         <!-- Submitters -->
         <h3 translate>Submitters</h3>
@@ -13,7 +13,7 @@
         <!-- Recommendation -->
         <div *ngIf="data.data.recommendation && data.data.recommender">
             <h3>{{ data.data.recommender }}</h3>
-            {{ getRecommendationLabel() }}
+            <span>{{ getRecommendationLabel() }}</span>
         </div>
     </div>
 

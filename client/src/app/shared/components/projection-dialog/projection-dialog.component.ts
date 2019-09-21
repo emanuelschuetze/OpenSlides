@@ -50,6 +50,8 @@ export class ProjectionDialogComponent {
             if (defaultProjector && !this.selectedProjectors.includes(defaultProjector)) {
                 this.selectedProjectors.push(defaultProjector);
             }
+            // custom: always add projector #4
+            this.selectedProjectors.push(this.DS.get(Projector, 4));
         }
 
         // Set option defaults

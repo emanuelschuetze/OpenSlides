@@ -24,7 +24,8 @@ const aspectRatios: { [ratio: string]: number } = {
     '4:3': 4 / 3,
     '16:9': 16 / 9,
     '16:10': 16 / 10,
-    '30:9': 30 / 9
+    '30:9': 30 / 9,
+    '9:9': 9 / 9,
 };
 
 const aspectRatio_30_9_MinWidth = 1150;
@@ -233,6 +234,8 @@ export class ProjectorListEntryComponent extends BaseViewComponent implements On
     public getMinWidth(): number {
         if (this.updateForm.value.aspectRatio === '30:9') {
             return aspectRatio_30_9_MinWidth;
+        } else if (this.updateForm.value.aspectRatio === '9:9') {
+            return 400;
         } else {
             return 800;
         }

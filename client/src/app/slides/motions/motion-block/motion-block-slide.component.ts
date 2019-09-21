@@ -6,6 +6,7 @@ import { SlideData } from 'app/core/core-services/projector-data.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { BaseMotionSlideComponent } from '../base/base-motion-slide';
 import { MotionBlockSlideData, MotionBlockSlideMotionRepresentation } from './motion-block-slide-data';
+import { IBaseScaleScrollSlideComponent } from 'app/slides/base-scale-scroll-slide-component';
 
 // Layout:
 // 1) Long layout: Motion title is shown and the motions are
@@ -17,17 +18,18 @@ import { MotionBlockSlideData, MotionBlockSlideMotionRepresentation } from './mo
 //    in one line. This mode is used if #motions>SHORT_LAYOUT_THRESHOLD.
 //    The same as in the log layout holds, just with ROWS_PER_COLUMN_SHORT.
 
-const ROWS_PER_COLUMN_SHORT = 8;
-const ROWS_PER_COLUMN_LONG = 16;
-const SHORT_LAYOUT_THRESHOLD = 8;
-const MAX_COLUMNS = 3;
+const ROWS_PER_COLUMN_SHORT = 5;
+const ROWS_PER_COLUMN_LONG = 5;
+const SHORT_LAYOUT_THRESHOLD = 0;
+const MAX_COLUMNS = 11;
 
 @Component({
     selector: 'os-motion-block-slide',
     templateUrl: './motion-block-slide.component.html',
     styleUrls: ['./motion-block-slide.component.scss']
 })
-export class MotionBlockSlideComponent extends BaseMotionSlideComponent<MotionBlockSlideData> {
+export class MotionBlockSlideComponent extends BaseMotionSlideComponent<MotionBlockSlideData>
+    implements IBaseScaleScrollSlideComponent<MotionBlockSlideData> {
     /**
      * For sorting motion blocks by their displayed title
      */
@@ -87,6 +89,42 @@ export class MotionBlockSlideComponent extends BaseMotionSlideComponent<MotionBl
     public get data(): SlideData<MotionBlockSlideData> {
         return this._data;
     }
+
+    private _scroll = 0;
+
+    @Input()
+    public set scroll(value: number) {
+        this._scroll = value;
+
+        value *= -100;
+        value += 40;
+        this.textDivStyles['margin-top'] = `${value}px`;
+    }
+
+    public get scroll(): number {
+        return this._scroll;
+    }
+
+    private _scale = 0;
+
+    @Input()
+    public set scale(value: number) {
+        this._scale = value;
+
+        value *= 10;
+        value += 100;
+        this.textDivStyles['font-size'] = `${value}%`;
+    }
+
+    public get scale(): number {
+        return this._scale;
+    }
+
+    public textDivStyles: {
+        'margin-top'?: string;
+        'font-size'?: string;
+    } = {};
+
 
     /**
      * If this is set, all motions have the same recommendation, saved in this variable.

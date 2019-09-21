@@ -34,6 +34,7 @@
 
     span {
         color: black;
+        font-size: 108%;
     }
 }
 
@@ -41,7 +42,7 @@
     min-width: 1px;
 }
 
-#text-wrapper {
+#motion-slide-text-wrapper {
     overflow: hidden;
 }
 
@@ -67,5 +68,8 @@
                 }
             }
         }
+    }
+    h3.amendment-line-header {
+        color: white;
     }
 }

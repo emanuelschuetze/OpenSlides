@@ -1,14 +1,10 @@
 <div *ngIf="data">
     <div class="slidetitle">
         <h1 translate>List of speakers</h1>
-        <h2>
-            {{ getTitle() }}
-            <span *ngIf="getSpeakersCount() > 0 && !hideAmountOfSpeakers">
-                &ndash; {{ getSpeakersCount() }} <span translate>Speakers</span>
-            </span>
-        </h2>
     </div>
 
+    <div id="slide-text-wrapper">
+    <div [ngStyle]="textDivStyles">
     <!-- Last speakers -->
     <div *ngIf="data.data.finished && data.data.finished.length">
         <div *ngFor="let speaker of data.data.finished" class="lastSpeakers">
@@ -19,18 +15,26 @@
 
     <!-- Current speaker -->
     <div *ngIf="data.data.current" class="currentSpeaker">
-        <mat-icon>mic</mat-icon>
-        <span>{{ data.data.current.user }}</span>
-        <mat-icon *ngIf="data.data.current.marked">star</mat-icon>
+        <div>
+            {{ getSpeakerNameWithLinebreak(data.data.current.user)[0] }}
+            <mat-icon *ngIf="data.data.current.marked">star</mat-icon>
+        </div>
+        <div>
+            {{ getSpeakerNameWithLinebreak(data.data.current.user)[1] }}
+        </div>
     </div>
 
     <!-- Next speakers -->
     <div *ngIf="data.data.waiting && data.data.waiting.length">
         <ol class="nextSpeakers">
             <li *ngFor="let speaker of data.data.waiting">
-                {{ speaker.user }}
+                {{ getSpeakerNameWithLinebreak(speaker.user)[0] }}
                 <mat-icon *ngIf="speaker.marked">star</mat-icon>
+                <br>
+                {{ getSpeakerNameWithLinebreak(speaker.user)[1] }}
             </li>
         </ol>
+    </div>
+    </div>
     </div>
 </div>
