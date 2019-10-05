@@ -17,10 +17,10 @@ import { MotionBlockSlideData, MotionBlockSlideMotionRepresentation } from './mo
 //    in one line. This mode is used if #motions>SHORT_LAYOUT_THRESHOLD.
 //    The same as in the log layout holds, just with ROWS_PER_COLUMN_SHORT.
 
-const ROWS_PER_COLUMN_SHORT = 8;
-const ROWS_PER_COLUMN_LONG = 16;
-const SHORT_LAYOUT_THRESHOLD = 8;
-const MAX_COLUMNS = 3;
+const ROWS_PER_COLUMN_SHORT = 12;
+const ROWS_PER_COLUMN_LONG = 12;
+const SHORT_LAYOUT_THRESHOLD = 0;
+const MAX_COLUMNS = 7;
 
 @Component({
     selector: 'os-motion-block-slide',
