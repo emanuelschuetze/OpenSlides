@@ -1334,10 +1334,14 @@ export class DiffService {
 
         const fragment = this.htmlToFragment(htmlIn);
         this.insertInternalLineMarkers(fragment);
-        if (toLine === null) {
+        if (toLine === null || isNaN(toLine)) {
             const internalLineMarkers = fragment.querySelectorAll('OS-LINEBREAK'),
                 lastMarker = <Element>internalLineMarkers[internalLineMarkers.length - 1];
-            toLine = parseInt(lastMarker.getAttribute('data-line-number'), 10);
+            if (lastMarker) {
+                toLine = parseInt(lastMarker.getAttribute('data-line-number'), 10);
+            } else {
+                toLine = fromLine;
+            }
         }
 
         const fromLineNode = this.getLineNumberNode(fragment, fromLine),
