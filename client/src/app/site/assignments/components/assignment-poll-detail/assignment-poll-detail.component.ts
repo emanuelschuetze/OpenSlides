@@ -22,6 +22,13 @@ import { ViewAssignmentVote } from '../../models/view-assignment-vote';
 })
 export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewAssignmentPoll> {
     public votesByUser: { [key: number]: { user: ViewUser; votes: { [key: number]: ViewAssignmentVote } } };
+    public get columnDefinition(): string[] {
+        let columns = ['user', 'yes', 'no'];
+        if ((<ViewAssignmentPoll>this.poll).pollmethod === AssignmentPollMethods.YNA) {
+            columns = columns.concat('abstain');
+        }
+        return columns;
+    }
 
     public constructor(
         title: Title,

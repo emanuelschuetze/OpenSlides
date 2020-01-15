@@ -18,7 +18,7 @@ import { ViewGroup } from 'app/site/users/models/view-group';
 import { BasePollRepositoryService } from '../services/base-poll-repository.service';
 import { ViewBasePoll } from '../models/view-base-poll';
 
-export class BasePollDetailComponent<V extends ViewBasePoll> extends BaseViewComponent implements OnInit {
+export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends BaseViewComponent implements OnInit {
     /**
      * All the groups of users.
      */
@@ -99,7 +99,7 @@ export class BasePollDetailComponent<V extends ViewBasePoll> extends BaseViewCom
         const text = 'Do you really want to delete the selected poll?';
 
         if (await this.promptDialog.open(title, text)) {
-            await this.repo.delete(this.poll);
+            this.repo.delete(this.poll).then(() => this.onDeleted());
         }
     }
 
@@ -121,12 +121,21 @@ export class BasePollDetailComponent<V extends ViewBasePoll> extends BaseViewCom
         this.chartDataSubject.next(this.poll.generateChartData());
     }
 
+    protected onDeleted(): void {}
+
+    protected onStateChanged(): void {}
+
+    /**
+     * Called after the poll has been loaded. Meant to be overwritten by subclasses who need initial access to the poll
+     */
+    protected onPollLoaded(): void {}
+
     /**
      * This checks, if the poll has votes.
      */
     private checkData(): void {
         if (this.poll.state === 3 || this.poll.state === 4) {
-            // this.chartDataSubject.next(this.poll.generateChartData());
+            setTimeout(() => this.chartDataSubject.next(this.poll.generateChartData()));
         }
     }
 
@@ -142,7 +151,6 @@ export class BasePollDetailComponent<V extends ViewBasePoll> extends BaseViewCom
                         this.poll = poll;
                         this.updateBreadcrumbs();
                         this.checkData();
-                        this.labels = this.createChartLabels();
                         this.onPollLoaded();
                     }
                 })
@@ -158,22 +166,17 @@ export class BasePollDetailComponent<V extends ViewBasePoll> extends BaseViewCom
     }
 
     /**
-     * Called after the poll has been loaded. Meant to be overwritten by subclasses who need initial access to the poll
-     */
-    public onPollLoaded(): void {}
-
-    /**
      * Action for the different breadcrumbs.
      */
     private async changeState(): Promise<void> {
-        this.actionWrapper(this.repo.changePollState(this.poll));
+        this.actionWrapper(this.repo.changePollState(this.poll), this.onStateChanged);
     }
 
     /**
      * Resets the state of a motion-poll.
      */
     private async resetState(): Promise<void> {
-        this.actionWrapper(this.repo.resetPoll(this.poll));
+        this.actionWrapper(this.repo.resetPoll(this.poll), this.onStateChanged);
     }
 
     /**
@@ -183,17 +186,15 @@ export class BasePollDetailComponent<V extends ViewBasePoll> extends BaseViewCom
      *
      * @returns Any promise-like.
      */
-    private actionWrapper(action: Promise<any>): any {
-        action.then(() => this.checkData()).catch(this.raiseError);
-    }
-
-    /**
-     * Function to create the labels for the chart.
-     *
-     * @returns An array of `Label`.
-     */
-    private createChartLabels(): Label[] {
-        return ['Number of votes'];
+    private actionWrapper(action: Promise<any>, callback?: () => any): any {
+        action
+            .then(() => {
+                this.checkData();
+                if (callback) {
+                    callback();
+                }
+            })
+            .catch(this.raiseError);
     }
 
     /**
