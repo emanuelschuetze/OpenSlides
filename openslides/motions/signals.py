@@ -23,7 +23,7 @@ def create_builtin_workflows(sender, **kwargs):
                                      allow_create_poll=False,
                                      restriction=[
                                         "is_submitter",
-                                        "managers_only"
+                                        "motions.can_manage"
                                      ],
                                      dont_set_identifier=True,
                                      merge_amendment_into_final=-1)
@@ -35,7 +35,7 @@ def create_builtin_workflows(sender, **kwargs):
                                      allow_create_poll=False,
                                      restriction=[
                                         "is_submitter",
-                                        "managers_only"
+                                        "motions.can_manage"
                                      ],
                                      dont_set_identifier=True,
                                      merge_amendment_into_final=-1)
@@ -171,7 +171,7 @@ def create_builtin_workflows(sender, **kwargs):
                         workflow=workflow_2,
                         restriction=[
                             "is_submitter",
-                            "managers_only"
+                            "motions.can_manage"
                         ],
                         allow_submitter_edit=True,
                         dont_set_identifier=True,
@@ -181,7 +181,7 @@ def create_builtin_workflows(sender, **kwargs):
                         workflow=workflow_2,
                         restriction=[
                             "is_submitter",
-                            "managers_only"
+                            "motions.can_manage"
                         ],
                         dont_set_identifier=True,
                         merge_amendment_into_final=-1)
@@ -190,7 +190,7 @@ def create_builtin_workflows(sender, **kwargs):
                         workflow=workflow_2,
                         restriction=[
                             "is_submitter",
-                            "managers_only"
+                            "motions.can_manage"
                         ],
                         dont_set_identifier=True,
                         css_class='grey',
@@ -201,7 +201,7 @@ def create_builtin_workflows(sender, **kwargs):
                         restriction=[
                             "motions.can_see_internal",
                             "motions.can_manage_metadata",
-                            "managers_only"
+                            "motions.can_manage"
                         ],
                         dont_set_identifier=True,
                         merge_amendment_into_final=-1)
@@ -211,7 +211,7 @@ def create_builtin_workflows(sender, **kwargs):
                         restriction=[
                             "motions.can_see_internal",
                             "motions.can_manage_metadata",
-                            "managers_only"
+                            "motions.can_manage"
                         ],
                         merge_amendment_into_final=-1)
     state_2_5.save(skip_autoupdate=True)
@@ -220,7 +220,7 @@ def create_builtin_workflows(sender, **kwargs):
                         restriction=[
                             "motions.can_see_internal",
                             "motions.can_manage_metadata",
-                            "managers_only"
+                            "motions.can_manage"
                         ],
                         merge_amendment_into_final=-1)
     state_2_6.save(skip_autoupdate=True)
@@ -229,7 +229,7 @@ def create_builtin_workflows(sender, **kwargs):
                         restriction=[
                             "motions.can_see_internal",
                             "motions.can_manage_metadata",
-                            "managers_only"
+                            "motions.can_manage"
                         ],
                         merge_amendment_into_final=-1)
     state_2_7.save(skip_autoupdate=True)
@@ -238,7 +238,7 @@ def create_builtin_workflows(sender, **kwargs):
                         restriction=[
                             "motions.can_see_internal",
                             "motions.can_manage_metadata",
-                            "managers_only"
+                            "motions.can_manage"
                         ],
                         merge_amendment_into_final=-1)
     state_2_8.save(skip_autoupdate=True)
@@ -247,7 +247,7 @@ def create_builtin_workflows(sender, **kwargs):
                         restriction=[
                             "motions.can_see_internal",
                             "motions.can_manage_metadata",
-                            "managers_only"
+                            "motions.can_manage"
                         ],
                         merge_amendment_into_final=-1)
     state_2_9.save(skip_autoupdate=True)
@@ -341,7 +341,7 @@ def create_builtin_workflows(sender, **kwargs):
                         workflow=workflow_3,
                         restriction=[
                             "is_submitter",
-                            "managers_only"
+                            "motions.can_manage"
                         ],
                         allow_submitter_edit=True,
                         dont_set_identifier=True,
@@ -351,7 +351,7 @@ def create_builtin_workflows(sender, **kwargs):
                         workflow=workflow_3,
                         restriction=[
                             "is_submitter",
-                            "managers_only"
+                            "motions.can_manage"
                         ],
                         dont_set_identifier=True,
                         merge_amendment_into_final=-1)
@@ -360,7 +360,7 @@ def create_builtin_workflows(sender, **kwargs):
                       workflow=workflow_3,
                         restriction=[
                             "is_submitter",
-                            "managers_only"
+                            "motions.can_manage"
                         ],
                         dont_set_identifier=True,
                         css_class='grey',
@@ -371,7 +371,7 @@ def create_builtin_workflows(sender, **kwargs):
                         restriction=[
                             "motions.can_see_internal",
                             "motions.can_manage_metadata",
-                            "managers_only"
+                            "motions.can_manage"
                         ],
                         dont_set_identifier=True,
                         merge_amendment_into_final=-1)
@@ -381,7 +381,7 @@ def create_builtin_workflows(sender, **kwargs):
                         restriction=[
                             "motions.can_see_internal",
                             "motions.can_manage_metadata",
-                            "managers_only"
+                            "motions.can_manage"
                         ],
                         merge_amendment_into_final=-1)
     state_3_5.save(skip_autoupdate=True)
@@ -390,7 +390,7 @@ def create_builtin_workflows(sender, **kwargs):
                         restriction=[
                             "motions.can_see_internal",
                             "motions.can_manage_metadata",
-                            "managers_only"
+                            "motions.can_manage"
                         ],
                         merge_amendment_into_final=-1)
     state_3_6.save(skip_autoupdate=True)
@@ -399,7 +399,7 @@ def create_builtin_workflows(sender, **kwargs):
                         restriction=[
                             "motions.can_see_internal",
                             "motions.can_manage_metadata",
-                            "managers_only"
+                            "motions.can_manage"
                         ],
                         merge_amendment_into_final=-1)
     state_3_7.save(skip_autoupdate=True)
@@ -408,7 +408,7 @@ def create_builtin_workflows(sender, **kwargs):
                         restriction=[
                             "motions.can_see_internal",
                             "motions.can_manage_metadata",
-                            "managers_only"
+                            "motions.can_manage"
                         ],
                         merge_amendment_into_final=-1)
     state_3_8.save(skip_autoupdate=True)
@@ -417,7 +417,7 @@ def create_builtin_workflows(sender, **kwargs):
                         restriction=[
                             "motions.can_see_internal",
                             "motions.can_manage_metadata",
-                            "managers_only"
+                            "motions.can_manage"
                         ],
                         merge_amendment_into_final=-1)
     state_3_9.save(skip_autoupdate=True)
@@ -470,7 +470,7 @@ def create_builtin_workflows(sender, **kwargs):
                         workflow=workflow_4,
                         restriction=[
                             "is_submitter",
-                            "managers_only"
+                            "motions.can_manage"
                         ],
                         allow_submitter_edit=True,
                         dont_set_identifier=True,
@@ -480,7 +480,7 @@ def create_builtin_workflows(sender, **kwargs):
                         workflow=workflow_4,
                         restriction=[
                             "is_submitter",
-                            "managers_only"
+                            "motions.can_manage"
                         ],
                         dont_set_identifier=True,
                         merge_amendment_into_final=-1)
@@ -489,7 +489,7 @@ def create_builtin_workflows(sender, **kwargs):
                         workflow=workflow_4,
                         restriction=[
                             "is_submitter",
-                            "managers_only"
+                            "motions.can_manage"
                         ],
                         dont_set_identifier=True,
                         css_class='grey',
@@ -499,7 +499,7 @@ def create_builtin_workflows(sender, **kwargs):
                         workflow=workflow_4,
                         restriction=[
                             "is_submitter",
-                            "managers_only"
+                            "motions.can_manage"
                         ],
                         dont_set_identifier=True,
                         merge_amendment_into_final=-1)
@@ -614,6 +614,139 @@ def create_builtin_workflows(sender, **kwargs):
     state_4_6.next_states.add(state_4_10, state_4_11, state_4_12, state_4_13, state_4_14, state_4_15, state_4_16, state_4_17, state_4_18, state_4_19, state_4_20, state_4_21, state_4_22)
     workflow_4.first_state = state_4_1
     workflow_4.save(skip_autoupdate=True)
+
+
+    # GEW workflow
+    workflow_5 = Workflow(name='GEW')
+    workflow_5.save(skip_autoupdate=True)
+    state_5_1 = State(name='in Bearbeitung',
+                        workflow=workflow_5,
+                        restriction=[
+                            "is_submitter",
+                            "motions.can_manage"
+                        ],
+                        allow_submitter_edit=True,
+                        dont_set_identifier=True,
+                        merge_amendment_into_final=-1)
+    state_5_1.save(skip_autoupdate=True)
+    state_5_2 = State(name='gestellt',
+                        workflow=workflow_5,
+                        restriction=[
+                            "is_submitter",
+                            "motions.can_manage"
+                        ],
+                        dont_set_identifier=True,
+                        merge_amendment_into_final=-1)
+    state_5_2.save(skip_autoupdate=True)
+    state_5_3 = State(name='verworfen',
+                        workflow=workflow_5,
+                        restriction=[
+                            "is_submitter",
+                            "motions.can_manage"
+                        ],
+                        dont_set_identifier=True,
+                        css_class='grey',
+                        merge_amendment_into_final=-1)
+    state_5_3.save(skip_autoupdate=True)
+    state_5_4 = State(name='geprüft',
+                        workflow=workflow_5,
+                        restriction=[
+                            "is_submitter",
+                            "motions.can_manage"
+                        ],
+                        dont_set_identifier=True,
+                        merge_amendment_into_final=-1)
+    state_5_4.save(skip_autoupdate=True)
+    state_5_5 = State(name='zugeordnet',
+                        workflow=workflow_5,
+                        restriction=[
+                            "is_submitter",
+                            "motions.can_manage"
+                        ],
+                        merge_amendment_into_final=-1)
+    state_5_5.save(skip_autoupdate=True)
+    state_5_6 = State(name='Empfehlung der ABK liegt vor',
+                        workflow=workflow_5,
+                        allow_create_poll=True,
+                        merge_amendment_into_final=-1)
+    state_5_6.save(skip_autoupdate=True)
+    state_5_10 = State(name='angenommen',
+                        workflow=workflow_5,
+                        recommendation_label='Annahme',
+                        css_class='green',
+                        merge_amendment_into_final=1)
+    state_5_10.save(skip_autoupdate=True)
+    state_5_11 = State(name='angenommen mit Änderungen',
+                        workflow=workflow_5,
+                        recommendation_label='Annahme mit Änderungen',
+                        css_class='green',
+                        merge_amendment_into_final=1)
+    state_5_11.save(skip_autoupdate=True)
+    state_5_12 = State(name='angenommen als Material zu',
+                        workflow=workflow_5,
+                        recommendation_label='Annahme als Material zu',
+                        show_recommendation_extension_field=True,
+                        show_state_extension_field=True,
+                        css_class='grey',
+                        merge_amendment_into_final=1)
+    state_5_12.save(skip_autoupdate=True)
+    state_5_13 = State(name='abgelehnt',
+                        workflow=workflow_5,
+                        recommendation_label='Ablehnung',
+                        css_class='red',
+                        merge_amendment_into_final=-1)
+    state_5_13.save(skip_autoupdate=True)
+    state_5_14 = State(name='Erledigt',
+                        workflow=workflow_5,
+                        recommendation_label='Erledigt',
+                        show_recommendation_extension_field=True,
+                        show_state_extension_field=True,
+                        css_class='grey',
+                        merge_amendment_into_final=-1)
+    state_5_14.save(skip_autoupdate=True)
+    state_5_15 = State(name='überwiesen an',
+                        workflow=workflow_5,
+                        recommendation_label='Überweisung an',
+                        show_recommendation_extension_field=True,
+                        show_state_extension_field=True,
+                        css_class='grey',
+                        merge_amendment_into_final=-1)
+    state_5_15.save(skip_autoupdate=True)
+    state_5_16 = State(name='überwiesen als Material an',
+                        workflow=workflow_5,
+                        recommendation_label='Überweisung als Material an',
+                        show_recommendation_extension_field=True,
+                        show_state_extension_field=True,
+                        css_class='grey',
+                        merge_amendment_into_final=-1)
+    state_5_16.save(skip_autoupdate=True)
+    state_5_20 = State(name='nicht befasst',
+                        workflow=workflow_5,
+                        recommendation_label='Nichtbefassung',
+                        css_class='grey',
+                        merge_amendment_into_final=-1)
+    state_5_20.save(skip_autoupdate=True)
+    state_5_21 = State(name='zurückgezogen',
+                        workflow=workflow_5,
+                        dont_set_identifier=True,
+                        css_class='grey',
+                        merge_amendment_into_final=-1)
+    state_5_21.save(skip_autoupdate=True)
+    state_5_22 = State(name='Sonstiges',
+                        workflow=workflow_5,
+                        recommendation_label='Sonstiges',
+                        show_recommendation_extension_field=True,
+                        show_state_extension_field=True,
+                        css_class='grey',
+                        merge_amendment_into_final=-1)
+    state_5_22.save(skip_autoupdate=True)
+    state_5_1.next_states.add(state_5_2, state_5_3)
+    state_5_2.next_states.add(state_5_4, state_5_21)
+    state_5_4.next_states.add(state_5_5, state_5_21)
+    state_5_5.next_states.add(state_5_6, state_5_21)
+    state_5_6.next_states.add(state_5_10, state_5_11, state_5_12, state_5_13, state_5_14, state_5_15, state_5_16, state_5_20, state_5_21, state_5_22)
+    workflow_5.first_state = state_5_1
+    workflow_5.save(skip_autoupdate=True)    
 
 
 def get_permission_change_data(sender, permissions, **kwargs):
