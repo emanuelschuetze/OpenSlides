@@ -130,7 +130,7 @@ if ENABLE_SAML:
 
 
 # Controls if electronic voting (means non-analog polls) are enabled.
-ENABLE_ELECTRONIC_VOTING = False
+ENABLE_ELECTRONIC_VOTING = True
 
 
 # Internationalization
